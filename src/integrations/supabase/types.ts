@@ -14,7 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      simulation_results: {
+        Row: {
+          budget: number
+          constraints: string[]
+          created_at: string
+          decision_types: string[]
+          id: string
+          location: string
+          options: Json
+          population: number
+          recommendation: string
+          time_horizon: number
+          user_id: string
+        }
+        Insert: {
+          budget: number
+          constraints: string[]
+          created_at?: string
+          decision_types: string[]
+          id?: string
+          location: string
+          options: Json
+          population: number
+          recommendation: string
+          time_horizon: number
+          user_id: string
+        }
+        Update: {
+          budget?: number
+          constraints?: string[]
+          created_at?: string
+          decision_types?: string[]
+          id?: string
+          location?: string
+          options?: Json
+          population?: number
+          recommendation?: string
+          time_horizon?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
