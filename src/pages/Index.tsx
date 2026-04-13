@@ -4,15 +4,19 @@ import ScenarioForm from "@/components/ScenarioForm";
 import ResultsDashboard from "@/components/ResultsDashboard";
 import EthicalPanel from "@/components/EthicalPanel";
 import Recommendation from "@/components/Recommendation";
+import InfrastructureMap from "@/components/InfrastructureMap";
+import PdfExportButton from "@/components/PdfExportButton";
 import { runSimulation } from "@/lib/api";
 import { SimulationResponse, ScenarioInput } from "@/types";
 
 const Index = () => {
   const [data, setData] = useState<SimulationResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [lastInput, setLastInput] = useState<ScenarioInput | null>(null);
 
   const handleSubmit = async (input: ScenarioInput) => {
     setLoading(true);
+    setLastInput(input);
     try {
       const res = await runSimulation(input);
       setData(res);
@@ -38,9 +42,14 @@ const Index = () => {
           </div>
         )}
 
-        {data && !loading && (
+        {data && lastInput && !loading && (
           <div className="space-y-8">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-foreground">Analysis</h2>
+              <PdfExportButton data={data} input={lastInput} />
+            </div>
             <Recommendation recommendation={data.recommendation} />
+            <InfrastructureMap location={lastInput.location} />
             <ResultsDashboard options={data.options} />
             <EthicalPanel options={data.options} />
           </div>
