@@ -1,13 +1,12 @@
 import { ScenarioInput, SimulationResponse } from "@/types";
+import { supabase } from "@/integrations/supabase/client";
 
 // Mock simulation for MVP — replace with real API call later
 export async function runSimulation(
   data: ScenarioInput
 ): Promise<SimulationResponse> {
-  // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 1500));
 
-  // Generate mock results based on input
   const budgetFactor = data.budget / 1000000;
   const popFactor = data.population / 100000;
 
@@ -43,4 +42,33 @@ export async function runSimulation(
       },
     ],
   };
+}
+
+export async function saveSimulationResult(
+  input: ScenarioInput,
+  result: SimulationResponse
+) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase.from("simulation_results").insert({
+    user_id: user.id,
+    location: input.location,
+    budget: input.budget,
+    population: input.population,
+    time_horizon: input.timeHorizon,
+    decision_types: input.decisionType,
+    constraints: input.constraints,
+    recommendation: result.recommendation,
+    options: result.options as any,
+  });
+}
+
+export async function getSimulationHistory() {
+  const { data } = await supabase
+    .from("simulation_results")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(10);
+  return data || [];
 }
